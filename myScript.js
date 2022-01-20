@@ -1,5 +1,47 @@
 console.log('myScript')
 
+Object.prototype.merge = function(targetObj, newvaluesObject){
+  console.log(targetObj)
+
+  let updatedObj = {}
+  targetObj.keys = Object.getOwnPropertyNames(targetObj)
+  let targetObjValues = Object.values(targetObj)
+  let targetObjEntries = Object.entries(targetObj)
+
+  let newvaluesObjectKeys = Object.getOwnPropertyNames(newvaluesObject)
+  let newvaluesObjectEntries = Object.entries(newvaluesObject)
+  newvaluesObject.keys = Object.getOwnPropertyNames(newvaluesObject)
+  console.log('Целевой массив значений: ' + targetObjEntries )
+  //Для каждого ключа нового объекта проверяем есть ли такой ключ в целевом объекте и если есть то
+  newvaluesObject.keys.forEach(key => {
+    if(targetObj.keys.includes(key)){
+      //если в целевом объекте есть такой ключ:
+      let oldIndex = targetObj.keys.indexOf(key)
+      let oldValue = targetObjValues[oldIndex] 
+      let newvaluesObjectIndex = newvaluesObjectKeys.indexOf(key)
+    
+      console.log('ключ ' + key + ' есть в целевом массиве, старое значение = ' + oldValue + 'Ключ-значение = '
+       + targetObjEntries[oldIndex] + ' Индекс = ' + oldIndex + 'Индекс в новом массиве = ' +  newvaluesObjectIndex + ' Ключ-значение = ' + newvaluesObjectEntries[newvaluesObjectIndex] )
+      //заменяем значение этого ключа:
+      targetObjEntries[oldIndex] = newvaluesObjectEntries[newvaluesObjectIndex]
+
+    } else
+      //если нет такого ключа:
+      {console.log('ключа ' + key + ' нет в целевом массиве')}
+
+
+      // Показать новый объект
+    
+ 
+  });
+  targetObjEntries.pop()
+  console.log(Object.fromEntries(targetObjEntries))
+  updatedObj = (Object.fromEntries(targetObjEntries))
+  console.log(`Обновленный объект:  ${Object.values(updatedObj)} `)
+  console.log(updatedObj)
+  // console.log('Новый массив: ' + targetObjEntries)
+
+}
 
 
 
