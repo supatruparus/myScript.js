@@ -1,8 +1,8 @@
 console.log('myScript')
 
-Object.prototype.merge = function(targetObj, newvaluesObject){
+Object.prototype.SetProperties = function(newvaluesObject){
   // console.log(targetObj)
-
+  let targetObj = this
   let updatedObj = {}
   targetObj.keys = Object.getOwnPropertyNames(targetObj)
   let targetObjValues = Object.values(targetObj)
@@ -44,7 +44,9 @@ Object.prototype.merge = function(targetObj, newvaluesObject){
   // console.log(updatedObj)
   // console.log(this)
   // console.log('Новый массив: ' + targetObjEntries)
+  
   return updatedObj
+
 }
 
 
