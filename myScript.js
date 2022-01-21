@@ -55,6 +55,7 @@ const SetProperties = function(newvaluesObject){
 }
 let myScript = {
   addDraggable: function(){
+  let inputType = 'mouseend'
   let maxZindex = 0;
   let draggables = document.getElementsByClassName("draggable");
 for (var i = 0; i < draggables.length; i++) {
@@ -68,33 +69,45 @@ for (var i = 0; i < draggables.length; i++) {
     startWidth: "",
     startHeight: "",
   }
-  //Set position absolute
-  draggables[i].style.position = 'absolute'
-  draggables[i].addEventListener('touchstart', function(e) {
-    event.preventDefault(true);
-    draggable.zIndex = parseInt(getComputedStyle(event.target).zIndex);
-    let newzindex = maxZindex+1;
-    if (maxZindex<newzindex) {
-      maxZindex = newzindex;
-    }
-        event.target.style.zIndex= newzindex;
-        
-    draggable.startTouchX = event.changedTouches[0].clientX + parseInt(getComputedStyle(event.target).left);
-    draggable.startTouchY = event.changedTouches[0].clientY + parseInt(getComputedStyle(event.target).top);
-    draggable.offsetX = event.changedTouches[0].clientX - parseInt(getComputedStyle(event.target).left);
-  
-    draggable.offsetY = event.changedTouches[0].clientY - parseInt(getComputedStyle(event.target).top)
-    draggable.startWidth = getComputedStyle(event.target).width;
-    draggable.startHeight = getComputedStyle(event.target).height;
-    // increaseSize(event.target, 110)
-  });
-  draggables[i].addEventListener('touchmove', drag);
+  //Set position 
+  draggables[i].style.position = 'relative'
+  draggables[i].addEventListener('touchstart', mousestartfunction );
+  draggables[i].addEventListener('mousedown',mousestartfunction);
+  function mousestartfunction(e) {
+    inputType = event.type
+    if(inputType === 'touchstart'){
+      console.log(inputType)
 
+
+      event.preventDefault(true);
+      draggable.zIndex = parseInt(getComputedStyle(event.target).zIndex);
+      let newzindex = maxZindex+1;
+      if (maxZindex<newzindex) {
+        maxZindex = newzindex;
+      }
+          event.target.style.zIndex= newzindex;
+          
+      draggable.startTouchX = event.changedTouches[0].clientX + parseInt(getComputedStyle(event.target).left);
+      draggable.startTouchY = event.changedTouches[0].clientY + parseInt(getComputedStyle(event.target).top);
+      draggable.offsetX = event.changedTouches[0].clientX - parseInt(getComputedStyle(event.target).left);
+    
+      draggable.offsetY = event.changedTouches[0].clientY - parseInt(getComputedStyle(event.target).top)
+      draggable.startWidth = getComputedStyle(event.target).width;
+      draggable.startHeight = getComputedStyle(event.target).height;
+      // increaseSize(event.target, 110)
+    }
+  }
+  draggables[i].addEventListener('touchmove', drag);
+  draggables[i].addEventListener('mousemove', drag)
+  
 function drag(){
   // console.log('должен двигаться')
   //Change Color
   // event.target.style.backgroundColor = "red";
-  let startX = parseInt(draggable.startTouchX);
+  
+  if(inputType ==='touchstart'){
+    //Если нажал не мышкой
+    let startX = parseInt(draggable.startTouchX);
   let startY = parseInt(draggable.startTouchY);
   let deltaX = event.changedTouches[0].clientX.toFixed(0) - parseInt(draggable.startTouchX) - draggable.offsetX;
   
@@ -107,8 +120,11 @@ function drag(){
     }
   event.target.style.left =newposition.x;
   event.target.style.top = newposition.y;
+  }
+  else{}
 }
 draggables[i].addEventListener('touchend', drop, event);
+draggables[i].addEventListener('mouseup',drop, event)
 
 function drop() {
   // event.target.style.backgroundColor = draggable.startColor;
@@ -160,31 +176,50 @@ function drop() {
     }
   },
 }
+
+
 class Block {
   
   constructor(options) {
+    this.elem = options.elem
     const name = 'block'
-    let defaultElem = document.createElement('div')
+
     let defaultStyle = {width: '100px',
       height: '100px',
       backgroundColor: 'red',
       margin: '5px 0 0 5px'
     }
-    //Set styles default:
+
+    // console.log(this.elem)
+    // console.log(this.elem.classList.length)
+    //If new element
+    if(this.elem === undefined) {
+      //Set styles default:
+      this.elem = document.createElement('div')
+      document.body.insertAdjacentElement('beforeend',this.elem)
+      // this.elem.classList.add('newElem')
+      
+      console.log('Element created: ')
+      console.log(this.elem)
+      Object.keys(defaultStyle).forEach(key => {
+      this.elem.style[key] = Object.values(defaultStyle)[Object.keys(defaultStyle).indexOf(key)]
+      }  
+      )
+    } 
+  
+  else {
+    console.log(this) //Eсли уже есть стили
+    console.log(this.elem)}
+   
     
-    Object.keys(defaultStyle).forEach(key => {
-    defaultElem.style[key] = Object.values(defaultStyle)[Object.keys(defaultStyle).indexOf(key)]
-    //add style from options
-    
-  })
-    defaultElem.classList.add('block')
-    document.body.insertAdjacentElement('beforeend',defaultElem)
-    this.elem = defaultElem
-  }
+}
   //Functions
-  // set style(obj){
-  //   this.elem.addStyleFromObject(obj)
-  // }
+  
+
+  insertIn(position, targetBlock){
+    
+    targetBlock.insertAdjacentElement(position,this.elem)
+  }
   set type(type){
     switch (type) {
       case 'circle':
@@ -225,6 +260,11 @@ class Block {
   get style(){
     return this.elem.style
   }
+  addAbility(ability_str){
+    this.elem.parentNode.classList.add(ability_str);
+    myScript.addDraggable()
+  }
+
   // set style(styleObj){
   //   Object.keys(styleObj).forEach(key => {
   //     // console.log(key)
