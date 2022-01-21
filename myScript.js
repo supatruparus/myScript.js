@@ -1,5 +1,40 @@
 console.log('myScript ')
 // Works now
+let domElement = {
+  get(){
+      console.log('getter')
+  },
+  elem: document.querySelector('div'),
+  class: 'circle',
+  styleObject: {
+      width: '340px',
+      height: '100px',
+      backgroundColor: 'yellow'
+  },
+  get style() {
+      // console.log('Keys: ' + Object.keys(this.styleObject))
+      // console.log(this.styleObject)
+      return this.styleObject
+      
+          },
+  set style(value) {
+          this.styleObject = value
+          let style = this.elem.style
+          let keys = Object.keys(this.styleObject)
+          let values = Object.values(this.styleObject)
+          this.styleObject = value
+          keys.forEach(function(key,index) {
+          // console.log(`${key},  ${index}, ${this}`)
+          style[key] = values[index]
+         
+     });
+      
+       },
+          add() {
+      myScript.addBlocks(this.class)
+  }
+      
+}
 const SetProperties = function(newvaluesObject){
   // console.log(targetObj)
   let targetObj = this
