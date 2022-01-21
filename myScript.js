@@ -160,6 +160,8 @@ function drop() {
     }
   },
 }
+
+
 class Block {
   
   constructor(options) {
