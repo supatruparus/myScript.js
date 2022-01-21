@@ -1,5 +1,5 @@
-console.log('myScript')
-
+console.log('myScript ')
+// Works now
 const SetProperties = function(newvaluesObject){
   // console.log(targetObj)
   let targetObj = this
