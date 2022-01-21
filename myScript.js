@@ -1,40 +1,5 @@
 console.log('myScript ')
 // Works now
-let domElement = {
-  get(){
-      console.log('getter')
-  },
-  elem: document.querySelector('div'),
-  class: 'circle',
-  styleObject: {
-      width: '340px',
-      height: '100px',
-      backgroundColor: 'yellow'
-  },
-  get style() {
-      // console.log('Keys: ' + Object.keys(this.styleObject))
-      // console.log(this.styleObject)
-      return this.styleObject
-      
-          },
-  set style(value) {
-          this.styleObject = value
-          let style = this.elem.style
-          let keys = Object.keys(this.styleObject)
-          let values = Object.values(this.styleObject)
-          this.styleObject = value
-          keys.forEach(function(key,index) {
-          // console.log(`${key},  ${index}, ${this}`)
-          style[key] = values[index]
-         
-     });
-      
-       },
-          add() {
-      myScript.addBlocks(this.class)
-  }
-      
-}
 const SetProperties = function(newvaluesObject){
   // console.log(targetObj)
   let targetObj = this
@@ -46,7 +11,7 @@ const SetProperties = function(newvaluesObject){
   let objectKeys = Object.keys(newvaluesObject)
   let newvaluesObjectEntries = Object.entries(newvaluesObject)
   objectKeys = Object.keys(newvaluesObject)
-  console.log(objectKeys)
+  // console.log(objectKeys)
   // console.log('Целевой массив значений: ' + targetObjEntries )
   //Для каждого ключа нового объекта проверяем есть ли такой ключ в целевом объекте и если есть то
   objectKeys.forEach(elem => {
@@ -68,7 +33,7 @@ const SetProperties = function(newvaluesObject){
         //если нет такого ключа:
         // console.log(`Ключа ${key} нет в целевом объекте, ${newvaluesObjectEntries}`)
         targetObjEntries.push(newvaluesObjectEntries[newvaluesObjectIndex])
-        console.log(newvaluesObjectEntries[newvaluesObjectIndex])
+        // console.log(newvaluesObjectEntries[newvaluesObjectIndex])
       }
 
 
@@ -83,14 +48,11 @@ const SetProperties = function(newvaluesObject){
   // console.log(`Обновленный объект:  ${Object.values(updatedObj)} `)
   // console.log(updatedObj)
   // console.log(this)
-  console.log(targetObjEntries)
+  // console.log(targetObjEntries)
   
   return targetObjEntries
 
 }
-
-
-
 let myScript = {
   addDraggable: function(){
   let maxZindex = 0;
@@ -129,7 +91,7 @@ for (var i = 0; i < draggables.length; i++) {
   draggables[i].addEventListener('touchmove', drag);
 
 function drag(){
-  console.log('должен двигаться')
+  // console.log('должен двигаться')
   //Change Color
   // event.target.style.backgroundColor = "red";
   let startX = parseInt(draggable.startTouchX);
@@ -168,7 +130,7 @@ function drop() {
   elem.style.transform = "translate(-"+(percent-100)/4+"%, -"+(percent-100)/4+"%)";
 },
 
- addBlocks: function(myclass, left , top){
+ addAbsPositionBlockOfClass: function(myclass, left , top){
     let newBlock = document.body.appendChild(document.createElement("div"));
     newBlock.innerHTML = "NewBlock";
     newBlock.classList.add(myclass);
@@ -180,41 +142,12 @@ function drop() {
     }
     return newBlock;
   },
-  getFirstElementByClass: function (classname){
+ getFirstElementByClass: function (classname){
     let elem = document.getElementsByClassName(classname)[0];
     return elem;
   },
-  person: {
-    firstName: {
-      value: "Ivan",
-      set(string){
-        this.value = string;
-      },
-      get(){
-        return this.value;
-      }
-    },
-    lastName: {
-      value: "Ivanov",
-      set(string){
-        this.value = string;
-      },
-      get(){
-        return this.value;
-      }
-    },
-    fullName: {
-      value: "Alexandr Vasilievich",
-      set(string){
-        this.value = string;
-      },
-      get(){
-        return this.value;
-      }
-    }
-  },
-   getDayfromNumber(x){
-  switch(x){
+ getDayfromNumber(x){
+ switch(x){
     case 1:return("Понедельник");
     case 2:return("Вторник");
     case 3:return("Среда");
@@ -226,7 +159,89 @@ function drop() {
     default: return("Введите число от 1 до 7"+" ,а не " + typeof(x));
     }
   },
-};
+}
+class Block {
+  
+  constructor(options) {
+    const name = 'block'
+    let defaultElem = document.createElement('div')
+    let defaultStyle = {width: '100px',
+      height: '100px',
+      backgroundColor: 'red',
+      margin: '5px 0 0 5px'
+    }
+    //Set styles default:
+    
+    Object.keys(defaultStyle).forEach(key => {
+    defaultElem.style[key] = Object.values(defaultStyle)[Object.keys(defaultStyle).indexOf(key)]
+    //add style from options
+    
+  })
+    defaultElem.classList.add('block')
+    document.body.insertAdjacentElement('beforeend',defaultElem)
+    this.elem = defaultElem
+  }
+  //Functions
+  // set style(obj){
+  //   this.elem.addStyleFromObject(obj)
+  // }
+  set type(type){
+    switch (type) {
+      case 'circle':
+        {this.elem.style.borderRadius = '50%'
+          return
+        }
+      case 'square':
+        {this.elem.style.borderRadius = '0px'
+        return}
+      case 'triangle':
+        {
+          addStyleFromObject.call(this,{
+            backgroundColor: '',
+            width:'0px',
+            height:'0px',
+            borderTop: '40px solid transparent',
+            borderBottom: '40px solid transparent',
+            borderLeft:'200px solid green',
+            borderRadius: ''
+          })
+          }
+        }    
+  }
+  get classList(){
+    return this.elem.classList
+  }
+  set classList(value){
+    this.elem.classList = value
+  }
+  addStyleFromObject = function(obj) {
+    Object.keys(obj).forEach(key => {
+      this.style[key] = Object.values(obj)[Object.keys(obj).indexOf(key)]
+    })
+  }
+  set style(obj){
+    addStyleFromObject.call(this, obj)
+  }
+  get style(){
+    return this.elem.style
+  }
+  // set style(styleObj){
+  //   Object.keys(styleObj).forEach(key => {
+  //     // console.log(key)
+  //     this.elem.style[key] = Object.values(styleObj)[Object.keys(styleObj).indexOf(key)]
+  //   })
+  // }
+  add() {
+    myScript.addBlocks(this.class)
+  }
+}
+
+addStyleFromObject = function(obj) {
+  Object.keys(obj).forEach(key => {
+    this.style[key] = Object.values(obj)[Object.keys(obj).indexOf(key)]
+  })
+} 
+
 // export default function print(string){
 //   console.log(string);
 // }
